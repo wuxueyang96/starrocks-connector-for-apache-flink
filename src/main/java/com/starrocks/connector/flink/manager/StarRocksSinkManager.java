@@ -227,6 +227,15 @@ public class StarRocksSinkManager implements Serializable {
         checkFlushException();
         try {
             if (0 == records.length) return;
+
+            if (sinkOptions.printDebugData()) {
+                StringBuilder sb = new StringBuilder();
+                for (String record: records) {
+                    sb.append("|").append(record);
+                }
+                LOG.info("StarRocks Connector print debug data: {}", sb.substring(1));
+            }
+
             String bufferKey = String.format("%s,%s", database, table);
             StarRocksSinkBufferEntity bufferEntity = bufferMap.computeIfAbsent(bufferKey, k -> new StarRocksSinkBufferEntity(database, table, sinkOptions.getLabelPrefix()));
             for (String record : records) {

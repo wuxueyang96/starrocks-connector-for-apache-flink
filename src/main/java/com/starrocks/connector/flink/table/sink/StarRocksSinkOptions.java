@@ -145,6 +145,8 @@ public class StarRocksSinkOptions implements Serializable {
                     "for adapting some frameworks which only support new sink api, and Flink will also remove the old sink api " +
                     "in the coming 2.0. Note that it's not compatible after changing the flag, that's, you can't recover from " +
                     "the previous job after changing the flag.");
+    public static final ConfigOption<Boolean> SINK_PRINT_DEBUG_DATA = ConfigOptions.key("sink.print-debug-data")
+            .booleanType().defaultValue(false).withDescription("Whether to print all sink records.");
 
     public static final ConfigOption<Integer> SINK_PARALLELISM = FactoryUtil.SINK_PARALLELISM;
 
@@ -360,6 +362,10 @@ public class StarRocksSinkOptions implements Serializable {
 
     public boolean isUseUnifiedSinkApi() {
         return tableOptions.get(SINK_USE_NEW_SINK_API);
+    }
+
+    public boolean printDebugData() {
+        return tableOptions.get(SINK_PRINT_DEBUG_DATA);
     }
 
     private void validateStreamLoadUrl() {
