@@ -128,6 +128,10 @@ public class StarRocksDynamicSinkFunction<T> extends StarRocksDynamicSinkFunctio
                 // let go the UPDATE_AFTER and INSERT rows for tables who have a group of `unique` or `duplicate` keys.
                 return;
             }
+            if (sinkOptions.supportUpsertDelete() && sinkOptions.ignoreDelete()
+                    && RowKind.DELETE.equals(((RowData)value).getRowKind())) {
+                return;
+            }
         }
         String serializedValue = serializer.serialize(rowTransformer.transform(value, sinkOptions.supportUpsertDelete()));
         sinkManager.writeRecords(

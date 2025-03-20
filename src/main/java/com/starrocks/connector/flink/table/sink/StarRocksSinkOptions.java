@@ -145,8 +145,16 @@ public class StarRocksSinkOptions implements Serializable {
                     "for adapting some frameworks which only support new sink api, and Flink will also remove the old sink api " +
                     "in the coming 2.0. Note that it's not compatible after changing the flag, that's, you can't recover from " +
                     "the previous job after changing the flag.");
+
     public static final ConfigOption<Boolean> SINK_PRINT_DEBUG_DATA = ConfigOptions.key("sink.print-debug-data")
             .booleanType().defaultValue(false).withDescription("Whether to print all sink records.");
+
+    public static final ConfigOption<Boolean> SINK_IGNORE_DELETE = ConfigOptions.key("sink.ignore.delete")
+            .booleanType().defaultValue(false).withDescription("Whether to ignore delete records from Flink. When set to true, the connector will skip " +
+                    "all DELETE RowKind messages from Flink. This can be useful when you only want to sync insert and " +
+                    "update operations to the target table. When set to false, delete operations will be processed normally. " +
+                    "Note that ignoring deletes may lead to data inconsistency between source and target if the source " +
+                    "system performs delete operations.");
 
     public static final ConfigOption<Integer> SINK_PARALLELISM = FactoryUtil.SINK_PARALLELISM;
 
@@ -366,6 +374,10 @@ public class StarRocksSinkOptions implements Serializable {
 
     public boolean printDebugData() {
         return tableOptions.get(SINK_PRINT_DEBUG_DATA);
+    }
+
+    public boolean ignoreDelete() {
+        return tableOptions.get(SINK_IGNORE_DELETE);
     }
 
     private void validateStreamLoadUrl() {
